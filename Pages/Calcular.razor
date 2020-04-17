@@ -1,0 +1,130 @@
+﻿@page "/Calcular"
+
+
+<div class="jumbotron">
+    <h1>Calcular</h1>
+
+    <p>
+        <label style="color:azure" for="favcolor">Nº dias de formação:</label> <select id="Select1" @bind="cbdias">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+            <option>11</option>
+            <option>12</option>
+            <option>13</option>
+            <option>14</option>
+            <option>15</option>
+            <option>16</option>
+            <option>17</option>
+            <option>18</option>
+            <option>19</option>
+            <option>20</option>
+            <option>21</option>
+            <option>22</option>
+            <option>23</option>
+            <option>24</option>
+            <option>25</option>
+
+        </select>
+    </p>
+
+    <p>
+        Nº Faltas:  <select id="Select2" @bind="cdfaltas">
+            <option>0</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+            <option>11</option>
+            <option>12</option>
+            <option>13</option>
+            <option>14</option>
+            <option>15</option>
+
+        </select>
+    </p>
+
+    <p>Nº de horas: <input id="Text1" type="text" @bind="txthoras" /></p>
+
+    <p><input type="checkbox" name="Bolsa:" class="form-check-input" @bind="Chkbolsa" />Bolsa: @lbbolsa</p>
+
+    <p>Alimentação: @lbalimen</p>
+
+    <p>Transporte: <input id="Text2" type="text" @bind="txttransp" /></p>
+
+    <p>Total a receber:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@lbtotal</p>
+
+    <button class="btn-danger" @onclick="limpar">Limpar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-primary" @onclick="calcular">Calcular</button>
+</div>
+
+@code {
+    String lbtotal = "0";
+    String cbdias = "1";
+    String cdfaltas = "0";
+    String txttransp;
+    String lbalimen = "0";
+    String txthoras = "6";
+    String lbbolsa = "0";
+
+    [Parameter] public bool Chkbolsa { get; set; } = true;
+
+    double bolsa = 0;
+    double alimen = 0;
+    double transp;
+    double total = 0;
+    double ndias;
+    double nfaltas;
+    double horas;
+    private void calcular()
+    {
+        //if (txttransp == "" || txthoras == "")
+        //{
+        //    txttransp = "0";
+        //    txthoras = "6";
+        //}
+        ndias = (float)Convert.ToDecimal(cbdias);
+        nfaltas = (float)Convert.ToDecimal(cdfaltas);
+        horas = (float)Convert.ToDecimal(txthoras);
+        bolsa = (ndias - nfaltas) * horas * 1.67;
+        alimen = (ndias - nfaltas) * 4.77;
+        transp = (float)Convert.ToDecimal(txttransp);
+        if (Chkbolsa == true)
+        {
+            total = bolsa + transp + alimen;
+            lbbolsa = String.Format("{0:0.##}", bolsa) + "€";
+            lbalimen = String.Format("{0:0.##}", alimen) + "€";
+            lbtotal = String.Format("{0:0.##}", total) + "€";
+        }
+        else
+        {
+            lbbolsa = "";
+            total = transp + alimen;
+            lbalimen = String.Format("{0:0.##}", alimen) + "€";
+            lbtotal = String.Format("{0:0.##}", total) + "€";
+        }
+    }
+
+    private void limpar()
+    {
+        lbbolsa = "0";
+        lbalimen = "0";
+        txttransp = "0";
+        //txttransp.text.clear()
+        lbtotal = "0";
+        txthoras = "6";
+    }
+}
