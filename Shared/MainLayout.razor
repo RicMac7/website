@@ -4,12 +4,28 @@
     <NavMenu />
 </div>
 
-<div class="main">
-    @*<div class="top-row px-4">
-        <a href="https://docs.microsoft.com/aspnet/" target="_blank">Acerca de</a>
-    </div>*@
 
-    <div class="content px-4">
-        @Body
+<body class="bg-dark">
+    @*<div class="bg-dark">*@
+    <div class="container">
+        <main role="main" class="pb-3">
+            @Body
+        </main>
     </div>
-</div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; @data - Criado por: Ricardo Machado @*- <a asp-area="" asp-page="/Privacy">Privacy</a>*@
+        </div>
+    </footer>
+
+    @*<span class="text-nowrap">
+        <label style="color:white" class="font-weight-bold"> Site criado por Ricardo Machado</label>
+        </span>*@
+    @*</div>*@
+</body>
+
+@code{
+    int data = DateTime.Now.Year;
+
+}

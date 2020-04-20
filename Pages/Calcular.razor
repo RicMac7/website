@@ -1,11 +1,34 @@
 ﻿@page "/Calcular"
 
+    <div>
+        <p>
+            <MatDatePicker Style="background-color:darkgrey" @bind-Value="@Date1"></MatDatePicker>
+        </p>
+        <MatButton Style="color:dodgerblue" OnClick="@(_ =>
+                              {
+                                  Date1 = DateTime.Now;
+                              })">
+            Agora
+        </MatButton>
+        <MatButton Style="color:dodgerblue" OnClick="@(_ =>
+                              {
+                                  Date1 = null;
+                              })">
+            limpar
+        </MatButton>
 
-<div class="jumbotron">
-    <h1>Calcular</h1>
+        <span Style="color:antiquewhite">@(Date1.HasValue ? Date1.Value.ToLocalTime().ToString() : "")</span>
+        <p></p>
+        </div>
 
+        @code
+        {
+            public DateTime? Date1 { get; set; } = DateTime.Now;
+        }
+<div>
+    @*<h1><label style="color:white">Calcular</label></h1>*@
     <p>
-        <label style="color:azure" for="favcolor">Nº dias de formação:</label> <select id="Select1" @bind="cbdias">
+        <label style="color:white">Nº dias de formação:</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select class="btn-secondary" id="Select1" @bind="cbdias">
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -31,12 +54,10 @@
             <option>23</option>
             <option>24</option>
             <option>25</option>
-
         </select>
     </p>
-
     <p>
-        Nº Faltas:  <select id="Select2" @bind="cdfaltas">
+        <label style="color:white">Nº Faltas:</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select class="btn-secondary" id="Select2" @bind="cdfaltas">
             <option>0</option>
             <option>1</option>
             <option>2</option>
@@ -53,78 +74,84 @@
             <option>13</option>
             <option>14</option>
             <option>15</option>
-
         </select>
     </p>
+    <p><label style="color:white">Nº de horas:</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="btn-secondary" id="Text1" style="width:50px" type="text" @bind="txthoras" /></p>
 
-    <p>Nº de horas: <input id="Text1" type="text" @bind="txthoras" /></p>
+    <p><MatCheckbox class="text-light" style="font-size:medium" @bind-Value="@Chkbolsa" Label="@(getLabel(Chkbolsa))"></MatCheckbox>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="color:white">@lbbolsa</label></p>
 
-    <p><input type="checkbox" name="Bolsa:" class="form-check-input" @bind="Chkbolsa" />Bolsa: @lbbolsa</p>
+    @*<p><input type="checkbox" name="check" class="custom-checkbox" @bind="Chkbolsa" /><label for="check" style="color:white">Bolsa:</label> <label style="color:white">@lbbolsa</label></p>*@
 
-    <p>Alimentação: @lbalimen</p>
+<p><label style="color:white">Alimentação:</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="color:white">@lbalimen</label></p>
 
-    <p>Transporte: <input id="Text2" type="text" @bind="txttransp" /></p>
+<p><label style="color:white">Transporte:</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="btn-secondary" id="Text2" style="width:50px" type="text" @bind="txttransp" /></p>
 
-    <p>Total a receber:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@lbtotal</p>
+    <p><label style="color:white">Total a receber:</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="color:white">@lbtotal</label></p>
 
-    <button class="btn-danger" @onclick="limpar">Limpar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="btn-danger" @onclick="limpar">Limpar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class="btn btn-primary" @onclick="calcular">Calcular</button>
 </div>
 
-@code {
-    String lbtotal = "0";
-    String cbdias = "1";
-    String cdfaltas = "0";
-    String txttransp;
-    String lbalimen = "0";
-    String txthoras = "6";
-    String lbbolsa = "0";
+        @code {
+            String lbtotal = "0";
+            String cbdias = "1";
+            String cdfaltas = "0";
+            String txttransp;
+            String lbalimen = "0";
+            String txthoras = "6";
+            String lbbolsa = "0";
+            bool Chkbolsa = true;
+            //[Parameter] public bool Chkbolsa { get; set; } = true;
 
-    [Parameter] public bool Chkbolsa { get; set; } = true;
+            double bolsa = 0;
+            double alimen = 0;
+            double transp;
+            double total = 0;
+            double ndias;
+            double nfaltas;
+            double horas;
+            private void calcular()
+            {
+                //if (txttransp == "" || txthoras == "")
+                //{
+                //    txttransp = "0";
+                //    txthoras = "6";
+                //}
+                ndias = (float)Convert.ToDecimal(cbdias);
+                nfaltas = (float)Convert.ToDecimal(cdfaltas);
+                horas = (float)Convert.ToDecimal(txthoras);
+                bolsa = (ndias - nfaltas) * horas * 1.67;
+                alimen = (ndias - nfaltas) * 4.77;
+                transp = (float)Convert.ToDecimal(txttransp);
+                if (Chkbolsa == true)
+                {
+                    total = bolsa + transp + alimen;
+                    lbbolsa = String.Format("{0:0.##}", bolsa) + "€";
+                    lbalimen = String.Format("{0:0.##}", alimen) + "€";
+                    lbtotal = String.Format("{0:0.##}", total) + "€";
+                }
+                else
+                {
+                    lbbolsa = "";
+                    total = transp + alimen;
+                    lbalimen = String.Format("{0:0.##}", alimen) + "€";
+                    lbtotal = String.Format("{0:0.##}", total) + "€";
+                }
+            }
 
-    double bolsa = 0;
-    double alimen = 0;
-    double transp;
-    double total = 0;
-    double ndias;
-    double nfaltas;
-    double horas;
-    private void calcular()
-    {
-        //if (txttransp == "" || txthoras == "")
-        //{
-        //    txttransp = "0";
-        //    txthoras = "6";
-        //}
-        ndias = (float)Convert.ToDecimal(cbdias);
-        nfaltas = (float)Convert.ToDecimal(cdfaltas);
-        horas = (float)Convert.ToDecimal(txthoras);
-        bolsa = (ndias - nfaltas) * horas * 1.67;
-        alimen = (ndias - nfaltas) * 4.77;
-        transp = (float)Convert.ToDecimal(txttransp);
-        if (Chkbolsa == true)
-        {
-            total = bolsa + transp + alimen;
-            lbbolsa = String.Format("{0:0.##}", bolsa) + "€";
-            lbalimen = String.Format("{0:0.##}", alimen) + "€";
-            lbtotal = String.Format("{0:0.##}", total) + "€";
+            private void limpar()
+            {
+                lbbolsa = "0";
+                lbalimen = "0";
+                txttransp = "0";
+                //txttransp.text.clear()
+                lbtotal = "0";
+                txthoras = "6";
+            }
+
+            string getLabel(bool val)
+            {
+                return !val ? "Sem Bolsa" : "Bolsa:";
+            }
+
         }
-        else
-        {
-            lbbolsa = "";
-            total = transp + alimen;
-            lbalimen = String.Format("{0:0.##}", alimen) + "€";
-            lbtotal = String.Format("{0:0.##}", total) + "€";
-        }
-    }
-
-    private void limpar()
-    {
-        lbbolsa = "0";
-        lbalimen = "0";
-        txttransp = "0";
-        //txttransp.text.clear()
-        lbtotal = "0";
-        txthoras = "6";
-    }
-}
