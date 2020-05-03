@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MatBlazor;
 
 namespace CursoIEFP2._0
 {
@@ -21,7 +22,16 @@ namespace CursoIEFP2._0
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            
+            services.AddMatToaster(config =>
+            {
+                config.ShowProgressBar=true;
+                config.Position = MatToastPosition.TopRight;
+                config.PreventDuplicates = true;
+                config.NewestOnTop = true;
+                config.ShowCloseButton = true;
+                config.MaximumOpacity = 95;
+                config.VisibleStateDuration = 3000;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
